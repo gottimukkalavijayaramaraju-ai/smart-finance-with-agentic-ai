@@ -1,0 +1,31 @@
+date,description,category,amount,type
+2026-06-01,Salary Deposit,Income,4500.00,credit
+2026-06-02,Whole Foods Market,Groceries,86.42,debit
+2026-06-03,Uber Trip,Transport,18.75,debit
+2026-06-04,Netflix Subscription,Entertainment,15.99,debit
+2026-06-05,Con Edison Electric Bill,Utilities,112.30,debit
+2026-06-06,Starbucks,Dining,6.85,debit
+2026-06-07,Rent Payment,Housing,1800.00,debit
+2026-06-08,Trader Joe's,Groceries,54.10,debit
+2026-06-09,Amazon Purchase,Shopping,129.99,debit
+2026-06-10,Gym Membership,Health,45.00,debit
+2026-06-11,Chipotle,Dining,12.40,debit
+2026-06-12,Spotify Subscription,Entertainment,10.99,debit
+2026-06-13,Shell Gas Station,Transport,52.00,debit
+2026-06-14,Target,Shopping,74.35,debit
+2026-06-15,Freelance Payment,Income,600.00,credit
+2026-06-16,Whole Foods Market,Groceries,91.20,debit
+2026-06-17,AT&T Phone Bill,Utilities,65.00,debit
+2026-06-18,Cinema Tickets,Entertainment,28.50,debit
+2026-06-19,Doctor Visit Copay,Health,35.00,debit
+2026-06-20,Best Buy,Shopping,249.99,debit
+2026-06-21,Olive Garden,Dining,58.20,debit
+2026-06-22,Uber Trip,Transport,22.10,debit
+2026-06-23,Trader Joe's,Groceries,47.65,debit
+2026-06-24,Water Bill,Utilities,38.90,debit
+2026-06-25,Gym Membership,Health,45.00,debit
+2026-06-26,Amazon Purchase,Shopping,64.20,debit
+2026-06-27,Dinner with Friends,Dining,72.00,debit
+2026-06-28,Movie Streaming Bundle,Entertainment,19.99,debit
+2026-06-29,Whole Foods Market,Groceries,88.75,debit
+2026-06-30,Rent Payment,Housing,1800.00,debit

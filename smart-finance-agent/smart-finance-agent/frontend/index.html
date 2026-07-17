@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Smart Finance Agent</title>
+<style>
+  :root {
+    --bg: #0e1a17;
+    --panel: #142621;
+    --panel-2: #1a302a;
+    --line: #234339;
+    --mint: #4fd6a8;
+    --mint-dim: #2e6e57;
+    --text: #eaf3ef;
+    --text-dim: #9db8ae;
+    --amber: #e0a94f;
+    --red: #e0715f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  header {
+    padding: 28px 32px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  header h1 {
+    margin: 0 0 4px;
+    font-size: 22px;
+    letter-spacing: 0.3px;
+  }
+  header .sub {
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 20px;
+    padding: 24px 32px 40px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+  }
+  .card h2 {
+    margin: 0 0 14px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+  }
+  .totals-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    flex: 1;
+    min-width: 120px;
+    background: var(--panel-2);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .stat .label { font-size: 12px; color: var(--text-dim); }
+  .stat .value { font-size: 20px; font-weight: 600; margin-top: 4px; }
+  .stat.income .value { color: var(--mint); }
+  .stat.net.positive .value { color: var(--mint); }
+  .stat.net.negative .value { color: var(--red); }
+
+  .budget-row {
+    margin-bottom: 12px;
+  }
+  .budget-row .top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .budget-row .cat { color: var(--text); }
+  .budget-row .figures { color: var(--text-dim); }
+  .bar-track {
+    height: 7px;
+    border-radius: 4px;
+    background: var(--panel-2);
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--mint);
+  }
+  .bar-fill.warn { background: var(--amber); }
+  .bar-fill.over { background: var(--red); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 6px; border-bottom: 1px solid var(--line); }
+  th { color: var(--text-dim); font-weight: 500; font-size: 11px; text-transform: uppercase; }
+  td.amount { text-align: right; font-variant-numeric: tabular-nums; }
+  td.amount.credit { color: var(--mint); }
+
+  .alert {
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    border-left: 3px solid var(--amber);
+    background: rgba(224, 169, 79, 0.08);
+  }
+  .alert.high { border-left-color: var(--red); background: rgba(224, 113, 95, 0.08); }
+  .alert-empty { color: var(--text-dim); font-size: 13px; }
+
+  .chat-card { display: flex; flex-direction: column; height: 560px; }
+  .chat-log { flex: 1; overflow-y: auto; padding-right: 4px; margin-bottom: 12px; }
+  .msg { margin-bottom: 12px; font-size: 14px; line-height: 1.45; }
+  .msg .who { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 3px; }
+  .msg.user .bubble { background: var(--panel-2); }
+  .msg.agent .bubble { background: rgba(79, 214, 168, 0.08); border: 1px solid var(--mint-dim); }
+  .bubble { padding: 10px 12px; border-radius: 8px; white-space: pre-wrap; }
+  .tool-note { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  .chat-input-row { display: flex; gap: 8px; }
+  .chat-input-row input {
+    flex: 1;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  .chat-input-row button {
+    background: var(--mint);
+    color: #0e1a17;
+    border: none;
+    border-radius: 8px;
+    padding: 0 18px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .chat-input-row button:disabled { opacity: 0.5; cursor: default; }
+  .hint { color: var(--text-dim); font-size: 12px; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Smart Finance Agent</h1>
+  <div class="sub">Base project &mdash; dashboard + agentic chat over your transactions</div>
+</header>
+
+<div class="layout">
+  <div>
+    <div class="card">
+      <h2>This Month</h2>
+      <div class="totals-row" id="totals"></div>
+    </div>
+
+    <div class="card">
+      <h2>Budget Status</h2>
+      <div id="budgets"></div>
+    </div>
+
+    <div class="card">
+      <h2>Alerts</h2>
+      <div id="alerts"></div>
+    </div>
+
+    <div class="card">
+      <h2>Recent Transactions</h2>
+      <table>
+        <thead><tr><th>Date</th><th>Description</th><th>Category</th><th style="text-align:right">Amount</th></tr></thead>
+        <tbody id="txn-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div>
+    <div class="card chat-card">
+      <h2>Ask the Agent</h2>
+      <div class="chat-log" id="chat-log"></div>
+      <div class="chat-input-row">
+        <input id="chat-input" type="text" placeholder="e.g. Am I over budget on dining this month?" />
+        <button id="chat-send">Send</button>
+      </div>
+      <div class="hint">The agent calls real tools against your transaction data before answering.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "";
+
+function money(n) {
+  const sign = n < 0 ? "-" : "";
+  return sign + "$" + Math.abs(n).toFixed(2);
+}
+
+async function loadDashboard() {
+  const [summary, budgets, alerts, txns] = await Promise.all([
+    fetch(`${API}/api/summary`).then(r => r.json()),
+    fetch(`${API}/api/budgets`).then(r => r.json()),
+    fetch(`${API}/api/alerts`).then(r => r.json()),
+    fetch(`${API}/api/transactions`).then(r => r.json()),
+  ]);
+
+  const t = summary.totals;
+  const netClass = t.net >= 0 ? "positive" : "negative";
+  document.getElementById("totals").innerHTML = `
+    <div class="stat income"><div class="label">Income</div><div class="value">${money(t.income)}</div></div>
+    <div class="stat"><div class="label">Expenses</div><div class="value">${money(t.expenses)}</div></div>
+    <div class="stat net ${netClass}"><div class="label">Net</div><div class="value">${money(t.net)}</div></div>
+  `;
+
+  document.getElementById("budgets").innerHTML = budgets.map(b => {
+    const pct = Math.min(b.percent_used, 100);
+    const cls = b.percent_used >= 100 ? "over" : (b.percent_used >= 80 ? "warn" : "");
+    return `
+      <div class="budget-row">
+        <div class="top">
+          <span class="cat">${b.category}</span>
+          <span class="figures">${money(b.spent)} / ${money(b.limit)}</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div>
+      </div>`;
+  }).join("");
+
+  document.getElementById("alerts").innerHTML = alerts.length
+    ? alerts.map(a => `<div class="alert ${a.severity}">${a.message}</div>`).join("")
+    : `<div class="alert-empty">No alerts. Everything's on track.</div>`;
+
+  document.getElementById("txn-body").innerHTML = txns.slice(0, 12).map(tx => `
+    <tr>
+      <td>${tx.date}</td>
+      <td>${tx.description}</td>
+      <td>${tx.category}</td>
+      <td class="amount ${tx.type === 'credit' ? 'credit' : ''}">${tx.type === 'credit' ? '+' : '-'}${money(tx.amount).slice(1)}</td>
+    </tr>`).join("");
+}
+
+let chatHistory = [];
+
+function appendMessage(role, text, toolCalls) {
+  const log = document.getElementById("chat-log");
+  const div = document.createElement("div");
+  div.className = `msg ${role}`;
+  const toolNote = toolCalls && toolCalls.length
+    ? `<div class="tool-note">used: ${toolCalls.map(t => t.tool).join(", ")}</div>`
+    : "";
+  div.innerHTML = `<div class="who">${role === 'user' ? 'You' : 'Agent'}</div><div class="bubble">${text}</div>${toolNote}`;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function sendChat() {
+  const input = document.getElementById("chat-input");
+  const btn = document.getElementById("chat-send");
+  const message = input.value.trim();
+  if (!message) return;
+
+  appendMessage("user", message);
+  input.value = "";
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message, history: chatHistory }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      appendMessage("agent", data.detail || "Something went wrong.");
+      return;
+    }
+    chatHistory = data.history || [];
+    appendMessage("agent", data.reply, data.tool_calls);
+    loadDashboard(); // refresh in case the agent changed data
+  } catch (e) {
+    appendMessage("agent", "Couldn't reach the server. Is the backend running?");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+document.getElementById("chat-send").addEventListener("click", sendChat);
+document.getElementById("chat-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") sendChat();
+});
+
+loadDashboard();
+</script>
+
+</body>
+</html>
